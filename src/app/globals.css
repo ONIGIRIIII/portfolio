@@ -1,0 +1,153 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --color-bg: 245 245 240;
+  --color-fg: 10 10 10;
+  --color-surface: 255 255 255;
+  --color-surface-alt: 232 232 226;
+  --color-accent: 196 0 16;
+  --color-line: 0 0 0;
+  --line-alpha: 0.12;
+
+  --accent-blue: 37 99 235;
+  --accent-teal: 13 148 136;
+  --accent-amber: 217 119 6;
+  --accent-violet: 124 58 237;
+
+  --glass-tint: 255 255 255;
+  --glass-tint-alpha: 0.55;
+  --glass-border: 0 0 0;
+  --glass-border-alpha: 0.08;
+  --glass-sheen-alpha: 0.35;
+}
+
+.dark {
+  --color-bg: 18 18 18;
+  --color-fg: 245 245 240;
+  --color-surface: 28 28 28;
+  --color-surface-alt: 36 36 36;
+  --color-accent: 255 90 20;
+  --color-line: 255 255 255;
+  --line-alpha: 0.14;
+
+  --accent-blue: 96 165 250;
+  --accent-teal: 45 212 191;
+  --accent-amber: 251 191 36;
+  --accent-violet: 167 139 250;
+
+  --glass-tint: 30 30 30;
+  --glass-tint-alpha: 0.45;
+  --glass-border: 255 255 255;
+  --glass-border-alpha: 0.12;
+  --glass-sheen-alpha: 0.12;
+}
+
+@theme inline {
+  --color-bg: rgb(var(--color-bg));
+  --color-fg: rgb(var(--color-fg));
+  --color-surface: rgb(var(--color-surface));
+  --color-surface-alt: rgb(var(--color-surface-alt));
+  --color-accent: rgb(var(--color-accent));
+  --color-line: rgb(var(--color-line) / var(--line-alpha));
+
+  --color-accent-blue: rgb(var(--accent-blue));
+  --color-accent-teal: rgb(var(--accent-teal));
+  --color-accent-amber: rgb(var(--accent-amber));
+  --color-accent-violet: rgb(var(--accent-violet));
+
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-space-mono);
+  --font-serif: var(--font-fraunces);
+
+  --radius-glass: 1.75rem;
+  --radius-chip: 999px;
+}
+
+@layer base {
+  html {
+    color-scheme: light dark;
+  }
+  body {
+    @apply text-fg font-sans antialiased transition-colors duration-300 cursor-crosshair;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply relative rounded-glass border backdrop-blur-xl backdrop-saturate-150;
+    background-color: rgb(var(--glass-tint) / var(--glass-tint-alpha));
+    border-color: rgb(var(--glass-border) / var(--glass-border-alpha));
+    box-shadow:
+      0 8px 32px -8px rgb(0 0 0 / 0.25),
+      inset 0 1px 0 rgb(255 255 255 / 0.06);
+  }
+
+  .glass-sheen {
+    @apply pointer-events-none absolute inset-0 rounded-glass;
+    background: linear-gradient(
+      135deg,
+      rgb(255 255 255 / var(--glass-sheen-alpha)),
+      transparent 45%
+    );
+  }
+
+  .panel {
+    @apply relative border border-line backdrop-blur-md backdrop-saturate-150;
+    background-color: rgb(var(--color-surface) / 0.72);
+  }
+
+  .dot-grid {
+    background-image: radial-gradient(rgb(var(--color-fg) / 0.12) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+
+  .blueprint-grid {
+    background-image:
+      linear-gradient(rgb(var(--color-line) / 1) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--color-line) / 1) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .corner-marks {
+    position: relative;
+  }
+  .corner-marks::before,
+  .corner-marks::after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-color: rgb(var(--color-fg) / 0.35);
+    top: -3px;
+  }
+  .corner-marks::before {
+    left: -3px;
+    border-left: 1px solid;
+    border-top: 1px solid;
+  }
+  .corner-marks::after {
+    right: -3px;
+    border-right: 1px solid;
+    border-top: 1px solid;
+  }
+
+  .marquee-track {
+    animation: marquee 28s linear infinite;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
