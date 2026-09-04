@@ -36,7 +36,7 @@ export function Button({ variant = "primary", href, onClick, children, className
 
   const variantClass =
     variant === "primary"
-      ? "bg-accent text-white hover:shadow-[0_0_24px_-4px_rgb(var(--color-accent)/0.6)]"
+      ? "neon-pulse bg-accent text-white hover:shadow-[0_0_24px_-4px_rgb(var(--color-accent)/0.6)]"
       : "border border-line text-fg hover:bg-surface-alt";
 
   const motionProps = reduceMotion

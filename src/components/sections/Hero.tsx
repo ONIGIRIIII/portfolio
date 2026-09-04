@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { DotBadge } from "@/components/ui/DotBadge";
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { Marquee } from "@/components/ui/Marquee";
-
-const nameWords = hero.name.split(" ");
+import { AsciiNameSlot } from "@/components/ui/AsciiNameSlot";
 
 export function Hero() {
   const reduceMotion = useReducedMotion();
@@ -20,54 +19,46 @@ export function Hero() {
     visible: { transition: { staggerChildren: reduceMotion ? 0 : 0.08, delayChildren: 0.15 } },
   };
 
-  const wordVariant = {
-    hidden: { opacity: 0, y: 30, filter: "blur(8px)" },
-    visible: {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
-    },
-  };
-
   return (
-    <section ref={sectionRef} id="top" className="relative flex min-h-screen items-center overflow-hidden px-6 pt-24">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 [background:radial-gradient(ellipse_60%_55%_at_50%_42%,rgb(var(--color-bg)/0.85),transparent_70%)]"
-      />
-
+    <section ref={sectionRef} id="top" className="relative flex min-h-screen items-center overflow-hidden px-6 pt-24 lg:pl-12 lg:pr-6">
       <CornerFrame className="pointer-events-none absolute inset-6 sm:inset-10" />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center py-16 text-center">
-        <motion.div initial="hidden" animate="visible" variants={container} className="flex flex-col items-center gap-5">
+      <div className="pointer-events-none absolute left-8 top-24 hidden font-mono text-[10px] uppercase tracking-widest text-accent/60 sm:left-12 sm:block">
+        SYS://ONLINE
+      </div>
+      <div className="pointer-events-none absolute right-8 top-24 hidden font-mono text-[10px] uppercase tracking-widest text-accent-blue/60 sm:right-12 sm:block">
+        NET.STATUS::SECURE
+      </div>
+
+      <div className="relative z-10 mx-auto w-full max-w-[1700px] py-16">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={container}
+          className="flex flex-col items-center gap-6 text-center lg:items-start lg:text-left"
+        >
           <motion.div variants={fadeUp}>
             <DotBadge>{hero.kicker}</DotBadge>
           </motion.div>
 
-          <h1 className="font-serif text-5xl font-medium tracking-tight sm:text-6xl md:text-7xl">
-            {nameWords.map((word, i) => (
-              <span key={i} className="mr-3 inline-block overflow-hidden pb-1 align-top last:mr-0">
-                <motion.span variants={wordVariant} className="inline-block">
-                  {word}
-                </motion.span>
-              </span>
-            ))}
-          </h1>
+          <motion.div variants={fadeUp} className="w-full">
+            <h1 className="sr-only">{hero.name}</h1>
+            <AsciiNameSlot
+              firsts={hero.nameVariants.map((variant) => variant[0])}
+              lasts={hero.nameVariants.map((variant) => variant[1])}
+              className="h-[180px] w-full sm:h-[220px] md:h-[280px] lg:h-[350px]"
+            />
+          </motion.div>
 
           <motion.p variants={fadeUp} className="font-serif text-xl italic text-accent sm:text-2xl">
             {hero.role}
           </motion.p>
 
-          <motion.p variants={fadeUp} className="max-w-lg text-balance text-fg/70">
-            {hero.subhead}
-          </motion.p>
-
-          <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-4 pt-2">
+          <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-4 pt-2 lg:justify-start">
             <Button variant="primary" href={hero.primaryCta.href}>
               {hero.primaryCta.label}
             </Button>
-            <Button variant="secondary" href={hero.secondaryCta.href}>
+            <Button variant="primary" href={hero.secondaryCta.href}>
               {hero.secondaryCta.label}
             </Button>
           </motion.div>
@@ -81,8 +72,8 @@ export function Hero() {
           className="mt-16 w-full border-t border-line pt-6"
         >
           <Marquee
-            items={hero.stack.map((tech) => (
-              <span key={tech} className="font-mono text-sm tracking-wide text-fg/40">
+            items={[...hero.stack, ...hero.stack, ...hero.stack].map((tech, i) => (
+              <span key={`${tech}-${i}`} className="font-mono text-sm tracking-wide text-fg/40">
                 {tech} <span className="text-fg/20">/</span>
               </span>
             ))}

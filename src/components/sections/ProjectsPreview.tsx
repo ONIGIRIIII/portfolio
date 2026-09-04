@@ -36,9 +36,9 @@ export function ProjectsPreview() {
                     </ParallaxItem>
                   </CornerFrame>
                 </div>
-                <div className="flex flex-1 flex-col gap-3 border-t border-line p-6">
-                  <p className="font-serif text-xl">{project.title}</p>
-                  <p className="flex-1 text-sm text-fg/60">{project.blurb}</p>
+                <div className="flex flex-1 flex-col gap-3 border-t border-line p-7">
+                  <p className="font-serif text-2xl">{project.title}</p>
+                  <p className="flex-1 text-base text-fg/60">{project.blurb}</p>
                   <div className="flex flex-wrap gap-2 pt-2">
                     {project.tags.map((tag) => (
                       <span

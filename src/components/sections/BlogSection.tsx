@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { blogCategories, blogPosts, type BlogPostCategory } from "@/content/placeholder-data";
+import { blogCategories, blogPosts, type BlogContentBlock, type BlogPostCategory } from "@/content/placeholder-data";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { fadeUp, staggerContainer } from "@/lib/motion";
@@ -22,6 +22,32 @@ function formatDate(iso: string) {
   });
 }
 
+function ContentBlock({ block }: { block: BlogContentBlock }) {
+  if (block.type === "paragraph") {
+    return <p className="text-sm leading-relaxed text-fg/70">{block.text}</p>;
+  }
+  if (block.type === "image") {
+    return (
+      <figure>
+        <div className="blueprint-grid flex h-64 items-center justify-center border border-line opacity-70">
+          <span className="font-mono text-xs tracking-widest text-fg/40">IMG</span>
+        </div>
+        <figcaption className="mt-2 text-center font-mono text-xs text-fg/40">{block.caption}</figcaption>
+      </figure>
+    );
+  }
+  return (
+    <div className="border-line overflow-hidden border">
+      <div className="bg-surface-alt border-line flex items-center justify-between border-b px-4 py-2">
+        <span className="font-mono text-[10px] uppercase tracking-widest text-fg/40">{block.language}</span>
+      </div>
+      <pre className="bg-surface-alt overflow-x-auto p-4 text-xs leading-relaxed text-fg/80">
+        <code className="font-mono">{block.code}</code>
+      </pre>
+    </div>
+  );
+}
+
 export function BlogSection() {
   const [filter, setFilter] = useState<Filter>("all");
   const [openSlug, setOpenSlug] = useState<string | null>(null);
@@ -30,6 +56,17 @@ export function BlogSection() {
     const sorted = [...blogPosts].sort((a, b) => b.date.localeCompare(a.date));
     return filter === "all" ? sorted : sorted.filter((post) => post.category === filter);
   }, [filter]);
+
+  const openPost = useMemo(() => blogPosts.find((post) => post.slug === openSlug) ?? null, [openSlug]);
+
+  useEffect(() => {
+    if (!openSlug) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpenSlug(null);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [openSlug]);
 
   return (
     <section id="blog" aria-labelledby="blog-heading" className="mx-auto max-w-6xl px-6 pb-24 pt-32">
@@ -71,7 +108,6 @@ export function BlogSection() {
             {posts.map((post) => {
               const meta = categoryMeta[post.category];
               const c = accentClasses[meta.color];
-              const isOpen = openSlug === post.slug;
 
               return (
                 <motion.article key={post.slug} variants={fadeUp} className="panel p-6">
@@ -89,37 +125,72 @@ export function BlogSection() {
                     <span className={`font-mono text-[10px] uppercase tracking-widest ${c.text}`}>{meta.label}</span>
                     <button
                       type="button"
-                      onClick={() => setOpenSlug(isOpen ? null : post.slug)}
-                      aria-expanded={isOpen}
+                      onClick={() => setOpenSlug(post.slug)}
                       className="focus-visible:ring-accent focus-visible:ring-offset-bg font-mono text-xs text-fg/70 underline-offset-4 hover:text-fg hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus:outline-none"
                     >
-                      {isOpen ? "Read less ↑" : "Read more ↓"}
+                      Click to read more →
                     </button>
                   </div>
-
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden"
-                      >
-                        <div className="border-line mt-4 flex flex-col gap-3 border-t pl-5 pt-4 text-sm text-fg/70">
-                          {post.content.map((paragraph, i) => (
-                            <p key={i}>{paragraph}</p>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </motion.article>
               );
             })}
           </div>
         </RevealOnScroll>
       </div>
+
+      <AnimatePresence>
+        {openPost && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-6">
+            <motion.div
+              key="blog-post-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 bg-fg/40 backdrop-blur-sm"
+              onClick={() => setOpenSlug(null)}
+            />
+            <motion.div
+              key="blog-post-modal"
+              initial={{ opacity: 0, scale: 0.98, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: 12 }}
+              transition={{ type: "spring", stiffness: 340, damping: 32 }}
+              className="panel relative flex h-full w-full max-w-4xl flex-col overflow-hidden sm:h-[calc(100vh-3rem)]"
+            >
+              {(() => {
+                const meta = categoryMeta[openPost.category];
+                const c = accentClasses[meta.color];
+                return (
+                  <>
+                    <div className="border-line flex items-start justify-between gap-4 border-b p-6 sm:p-8">
+                      <div>
+                        <span className={`font-mono text-[10px] uppercase tracking-widest ${c.text}`}>{meta.label}</span>
+                        <h3 className="mt-2 font-serif text-2xl leading-snug sm:text-3xl">{openPost.title}</h3>
+                        <p className="mt-2 font-mono text-xs text-fg/40">{formatDate(openPost.date)}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setOpenSlug(null)}
+                        aria-label="Close"
+                        className="focus-visible:ring-accent focus-visible:ring-offset-bg shrink-0 text-fg/50 hover:text-fg focus-visible:ring-2 focus-visible:ring-offset-2 focus:outline-none"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="flex flex-col gap-6 overflow-y-auto p-6 sm:p-8">
+                      {openPost.content.map((block, i) => (
+                        <ContentBlock key={i} block={block} />
+                      ))}
+                    </div>
+                  </>
+                );
+              })()}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

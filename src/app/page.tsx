@@ -4,10 +4,12 @@ import { SkillsGrid } from "@/components/sections/SkillsGrid";
 import { CertificationsSection } from "@/components/sections/CertificationsSection";
 import { ProjectsPreview } from "@/components/sections/ProjectsPreview";
 import { BlogPreview } from "@/components/sections/BlogPreview";
+import { SectionDots } from "@/components/ui/SectionDots";
 
 export default function Home() {
   return (
     <>
+      <SectionDots />
       <Hero />
       <AboutPreview />
       <SkillsGrid />

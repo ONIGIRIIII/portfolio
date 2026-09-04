@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, Space_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { AsciiField } from "@/components/ui/AsciiField";
+import { SiteBackground } from "@/components/ui/SiteBackground";
+import { GlassCursor } from "@/components/ui/GlassCursor";
 import { siteConfig } from "@/lib/site-config";
 
 const inter = Inter({
@@ -12,17 +13,11 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const spaceMono = Space_Mono({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-space-mono",
-});
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
-  variable: "--font-fraunces",
+  variable: "--font-jetbrains",
 });
 
 export const metadata: Metadata = {
@@ -39,16 +34,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceMono.variable} ${fraunces.variable}`}
+      className={`${inter.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen">
+      <body className="bg-bg flex min-h-screen flex-col">
         <ThemeProvider>
-          <div aria-hidden="true" className="bg-bg fixed inset-0 -z-10">
-            <AsciiField className="h-full w-full" cell={20} intensity={0.85} />
-          </div>
+          <SiteBackground />
+          <GlassCursor />
           <Navbar />
-          <main>{children}</main>
+          <main className="flex-1">{children}</main>
           <Footer />
         </ThemeProvider>
       </body>

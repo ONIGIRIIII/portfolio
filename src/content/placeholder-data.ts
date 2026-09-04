@@ -3,6 +3,11 @@ import { sectionLinks, blogSectionLinks, siteConfig } from "@/lib/site-config";
 export const hero = {
   kicker: "AVAILABLE FOR WORK",
   name: siteConfig.name,
+  nameVariants: [
+    ["Harshpreet", "Singh"], // English
+    ["हर्षप्रीत", "सिंह"], // Hindi (Devanagari)
+    ["ਹਰਸ਼ਪ੍ਰੀਤ", "ਸਿੰਘ"], // Punjabi (Gurmukhi)
+  ] as string[][],
   role: siteConfig.role,
   subhead:
     "I turn messy, real-world data into clear systems and decisions — from BI dashboards and ETL pipelines to full-stack tools — while studying Math at UBC.",
@@ -80,13 +85,13 @@ export const certifications = {
       status: "In Progress",
       color: "amber" as const,
     },
-    { name: "Cloud Practitioner Essentials", issuer: "AWS Skill Builder", color: "amber" as const },
-    { name: "Introduction to Generative AI", issuer: "Google Cloud", color: "teal" as const },
-    { name: "Google Data Analytics", issuer: "Coursera", color: "blue" as const },
-    { name: "Associate Data Analyst", issuer: "DataCamp", color: "violet" as const },
-    { name: "Data Analyst in Power BI", issuer: "DataCamp", color: "violet" as const },
-    { name: "Associate Data Analyst in SQL", issuer: "DataCamp", color: "violet" as const },
-    { name: "SQL 50 Badge", issuer: "LeetCode", color: "accent" as const },
+    { name: "Cloud Practitioner Essentials", issuer: "AWS Skill Builder", status: "Completed", color: "amber" as const },
+    { name: "Introduction to Generative AI", issuer: "Google Cloud", status: "Completed", color: "teal" as const },
+    { name: "Google Data Analytics", issuer: "Coursera", status: "Completed", color: "blue" as const },
+    { name: "Associate Data Analyst", issuer: "DataCamp", status: "Completed", color: "violet" as const },
+    { name: "Data Analyst in Power BI", issuer: "DataCamp", status: "Completed", color: "violet" as const },
+    { name: "Associate Data Analyst in SQL", issuer: "DataCamp", status: "Completed", color: "violet" as const },
+    { name: "SQL 50 Badge", issuer: "LeetCode", status: "Completed", color: "accent" as const },
   ],
 };
 
@@ -122,13 +127,18 @@ export const blogCategories = {
 
 export type BlogPostCategory = (typeof blogCategories.items)[number]["key"];
 
+export type BlogContentBlock =
+  | { type: "paragraph"; text: string }
+  | { type: "image"; caption: string }
+  | { type: "code"; language: string; code: string };
+
 export const blogPosts: {
   slug: string;
   title: string;
   excerpt: string;
   date: string;
   category: BlogPostCategory;
-  content: string[];
+  content: BlogContentBlock[];
 }[] = [
   {
     slug: "linear-algebra-but-make-it-useful",
@@ -137,8 +147,20 @@ export const blogPosts: {
     date: "2026-08-28",
     category: "class",
     content: [
-      "I'd sat through two terms of linear algebra treating eigenvectors as something you compute for an exam and never again. That changed when I tried to cut a wide feature set down to something a model could actually train on without overfitting.",
-      "PCA turned out to be the same math from the whiteboard, just pointed at a covariance matrix instead of a 3x3 practice problem. Seeing the top components actually separate the data visually is what made the concept stick in a way the proofs never did.",
+      {
+        type: "paragraph",
+        text: "I'd sat through two terms of linear algebra treating eigenvectors as something you compute for an exam and never again. That changed when I tried to cut a wide feature set down to something a model could actually train on without overfitting.",
+      },
+      {
+        type: "code",
+        language: "python",
+        code: "from sklearn.decomposition import PCA\n\npca = PCA(n_components=2)\nreduced = pca.fit_transform(features)\n\nprint(pca.explained_variance_ratio_)\n# [0.41, 0.19] — top two components hold 60% of the variance",
+      },
+      { type: "image", caption: "Top 2 principal components separating the feature set" },
+      {
+        type: "paragraph",
+        text: "PCA turned out to be the same math from the whiteboard, just pointed at a covariance matrix instead of a 3x3 practice problem. Seeing the top components actually separate the data visually is what made the concept stick in a way the proofs never did.",
+      },
     ],
   },
   {
@@ -148,8 +170,20 @@ export const blogPosts: {
     date: "2026-08-20",
     category: "work",
     content: [
-      "The pipeline itself wasn't the hard part — extract, transform, load is a well-worn pattern. The hard part was the transform step, where every assumption I'd made about the source data turned out to be wrong in some small, quiet way.",
-      "Duplicate keys that weren't supposed to exist, timestamps in three different formats, nulls that meant three different things depending on which team entered them. I started logging every row I dropped instead of silently filtering, and that one habit saved me from a bad debugging session two weeks later.",
+      {
+        type: "paragraph",
+        text: "The pipeline itself wasn't the hard part — extract, transform, load is a well-worn pattern. The hard part was the transform step, where every assumption I'd made about the source data turned out to be wrong in some small, quiet way.",
+      },
+      {
+        type: "code",
+        language: "python",
+        code: "def transform_row(row):\n    try:\n        return normalize(row)\n    except ValueError as e:\n        log_dropped_row(row, reason=str(e))\n        return None",
+      },
+      { type: "image", caption: "Row-drop audit log sampled from a single pipeline run" },
+      {
+        type: "paragraph",
+        text: "Duplicate keys that weren't supposed to exist, timestamps in three different formats, nulls that meant three different things depending on which team entered them. I started logging every row I dropped instead of silently filtering, and that one habit saved me from a bad debugging session two weeks later.",
+      },
     ],
   },
   {
@@ -159,8 +193,20 @@ export const blogPosts: {
     date: "2026-08-02",
     category: "projects",
     content: [
-      "The constraint was simple going in: no data leaves the machine. That ruled out any hosted embeddings API, so everything — chunking, embedding, and generation — runs locally through Ollama.",
-      "Chunk size ended up mattering more than I expected. Too small and the retrieved context lost the surrounding argument; too large and irrelevant text crowded out the answer. I landed on overlapping ~400-token chunks with a sliding window, which struck the best balance for lecture-slide PDFs specifically.",
+      {
+        type: "paragraph",
+        text: "The constraint was simple going in: no data leaves the machine. That ruled out any hosted embeddings API, so everything — chunking, embedding, and generation — runs locally through Ollama.",
+      },
+      {
+        type: "code",
+        language: "python",
+        code: "CHUNK_SIZE = 400\nOVERLAP = 80\n\ndef chunk(text):\n    step = CHUNK_SIZE - OVERLAP\n    return [text[i:i + CHUNK_SIZE] for i in range(0, len(text), step)]",
+      },
+      { type: "image", caption: "Retrieved chunk overlap visualized across a lecture PDF" },
+      {
+        type: "paragraph",
+        text: "Chunk size ended up mattering more than I expected. Too small and the retrieved context lost the surrounding argument; too large and irrelevant text crowded out the answer. I landed on overlapping ~400-token chunks with a sliding window, which struck the best balance for lecture-slide PDFs specifically.",
+      },
     ],
   },
   {
@@ -170,8 +216,20 @@ export const blogPosts: {
     date: "2026-07-05",
     category: "work",
     content: [
-      "Every dataset I touched in a course came pre-cleaned, well-documented, and ready for analysis. My first week on the job, I got a spreadsheet with three different date formats in the same column and no explanation for any of them.",
-      "The actual skill co-op taught me wasn't a new tool — it was learning to ask 'where did this number come from' before trusting it, and treating every source system as a suspect until proven otherwise.",
+      {
+        type: "paragraph",
+        text: "Every dataset I touched in a course came pre-cleaned, well-documented, and ready for analysis. My first week on the job, I got a spreadsheet with three different date formats in the same column and no explanation for any of them.",
+      },
+      { type: "image", caption: "Three date formats found in a single spreadsheet column" },
+      {
+        type: "code",
+        language: "sql",
+        code: "SELECT raw_date,\n       COALESCE(\n         TRY_CAST(raw_date AS DATE),\n         TRY_CAST(raw_date AS DATE FORMAT 'MM/DD/YYYY'),\n         TRY_CAST(raw_date AS DATE FORMAT 'DD-MON-YYYY')\n       ) AS parsed_date\nFROM   source_sheet;",
+      },
+      {
+        type: "paragraph",
+        text: "The actual skill co-op taught me wasn't a new tool — it was learning to ask 'where did this number come from' before trusting it, and treating every source system as a suspect until proven otherwise.",
+      },
     ],
   },
   {
@@ -181,8 +239,20 @@ export const blogPosts: {
     date: "2026-06-18",
     category: "projects",
     content: [
-      "ReVault started as a simple catalog: games, platforms, condition notes. It grew to 26 tables once I tried to model acquisition history, restoration workflows, and multi-region releases without losing referential integrity.",
-      "In hindsight, a few of those tables — particularly the ones splitting out minor lookup values — could have stayed as enums. Normalization is a tool, not a goal, and I over-applied it in a few places I'd simplify on a rebuild.",
+      {
+        type: "paragraph",
+        text: "ReVault started as a simple catalog: games, platforms, condition notes. It grew to 26 tables once I tried to model acquisition history, restoration workflows, and multi-region releases without losing referential integrity.",
+      },
+      { type: "image", caption: "Simplified ER diagram of ReVault's core tables" },
+      {
+        type: "code",
+        language: "sql",
+        code: "CREATE TABLE acquisition (\n  id            NUMBER GENERATED ALWAYS AS IDENTITY,\n  game_id       NUMBER NOT NULL REFERENCES game(id),\n  acquired_on   DATE NOT NULL,\n  condition_id  NUMBER REFERENCES condition_lookup(id),\n  PRIMARY KEY (id)\n);",
+      },
+      {
+        type: "paragraph",
+        text: "In hindsight, a few of those tables — particularly the ones splitting out minor lookup values — could have stayed as enums. Normalization is a tool, not a goal, and I over-applied it in a few places I'd simplify on a rebuild.",
+      },
     ],
   },
   {
@@ -192,8 +262,20 @@ export const blogPosts: {
     date: "2026-06-01",
     category: "class",
     content: [
-      "The formulas for a t-test are the easy part; any calculator handles that. What the course actually drilled into me was how easy it is to set up the wrong null hypothesis and get a technically correct, practically useless answer.",
-      "I started applying that lens outside the classroom too — before running any comparison at work, asking what exactly I'm assuming stays constant, and whether that assumption actually holds.",
+      {
+        type: "paragraph",
+        text: "The formulas for a t-test are the easy part; any calculator handles that. What the course actually drilled into me was how easy it is to set up the wrong null hypothesis and get a technically correct, practically useless answer.",
+      },
+      {
+        type: "code",
+        language: "python",
+        code: "from scipy import stats\n\nt_stat, p_value = stats.ttest_ind(control, treatment, equal_var=False)\nprint(f'p = {p_value:.4f}')",
+      },
+      { type: "image", caption: "Null hypothesis setup vs. the one that actually mattered" },
+      {
+        type: "paragraph",
+        text: "I started applying that lens outside the classroom too — before running any comparison at work, asking what exactly I'm assuming stays constant, and whether that assumption actually holds.",
+      },
     ],
   },
   {
@@ -203,8 +285,15 @@ export const blogPosts: {
     date: "2026-05-14",
     category: "work",
     content: [
-      "I expected a retro to be a venting session that quietly changed nothing. What surprised me was watching one specific complaint — that ticket estimates never accounted for review time — turn into an actual process change the following sprint.",
-      "The difference seemed to be specificity: vague frustration didn't move anything, but a concrete, measurable ask did.",
+      {
+        type: "paragraph",
+        text: "I expected a retro to be a venting session that quietly changed nothing. What surprised me was watching one specific complaint — that ticket estimates never accounted for review time — turn into an actual process change the following sprint.",
+      },
+      { type: "image", caption: "Retro board — the one action item that actually shipped" },
+      {
+        type: "paragraph",
+        text: "The difference seemed to be specificity: vague frustration didn't move anything, but a concrete, measurable ask did.",
+      },
     ],
   },
   {
@@ -214,8 +303,20 @@ export const blogPosts: {
     date: "2026-04-22",
     category: "projects",
     content: [
-      "The goal was to find players whose in-game rating undersold their underlying stats — the kind of undervalued pickup you'd only spot by actually running the numbers instead of trusting the headline rating.",
-      "The model surfaced 1,577 candidates performing up to 21% above their listed rating, but confidence dropped sharply for younger players with limited match data — a reminder that a clean output number can still be sitting on a shaky sample size.",
+      {
+        type: "paragraph",
+        text: "The goal was to find players whose in-game rating undersold their underlying stats — the kind of undervalued pickup you'd only spot by actually running the numbers instead of trusting the headline rating.",
+      },
+      {
+        type: "code",
+        language: "python",
+        code: "undervalued = df[df.stat_score - df.rating > df.stat_score.std()]\nundervalued = undervalued.sort_values('stat_score', ascending=False)\nprint(len(undervalued), 'candidates found')",
+      },
+      { type: "image", caption: "Distribution of rating vs. underlying stat differential" },
+      {
+        type: "paragraph",
+        text: "The model surfaced 1,577 candidates performing up to 21% above their listed rating, but confidence dropped sharply for younger players with limited match data — a reminder that a clean output number can still be sitting on a shaky sample size.",
+      },
     ],
   },
   {
@@ -225,8 +326,20 @@ export const blogPosts: {
     date: "2026-03-10",
     category: "class",
     content: [
-      "MATH 307 was the first course where matrix decompositions stopped being abstract manipulation and started looking like tools — SVD in particular, once I saw it used for compression and noise reduction instead of just proofs.",
-      "It's also the course that made me go back and rewatch the PCA material I'd half-understood in a previous term, which is how a stats side-project two months later ended up leaning on the same math.",
+      {
+        type: "paragraph",
+        text: "MATH 307 was the first course where matrix decompositions stopped being abstract manipulation and started looking like tools — SVD in particular, once I saw it used for compression and noise reduction instead of just proofs.",
+      },
+      {
+        type: "code",
+        language: "python",
+        code: "U, S, Vt = np.linalg.svd(image, full_matrices=False)\nrank = 10\ncompressed = U[:, :rank] @ np.diag(S[:rank]) @ Vt[:rank, :]",
+      },
+      { type: "image", caption: "SVD applied to image compression, rank-10 reconstruction" },
+      {
+        type: "paragraph",
+        text: "It's also the course that made me go back and rewatch the PCA material I'd half-understood in a previous term, which is how a stats side-project two months later ended up leaning on the same math.",
+      },
     ],
   },
 ];

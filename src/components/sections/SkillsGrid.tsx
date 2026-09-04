@@ -22,10 +22,10 @@ export function SkillsGrid() {
             const Icon = skillIcons[skill.icon];
             return (
               <motion.div key={skill.title} variants={fadeUp}>
-                <Panel interactive className="h-full p-6">
+                <Panel interactive className="h-full p-7">
                   <DotMatrixBadge color={skill.color} icon={<Icon />} />
-                  <p className="mt-4 font-serif text-lg">{skill.title}</p>
-                  <p className="mt-1 text-sm text-fg/60">{skill.blurb}</p>
+                  <p className="mt-4 font-serif text-xl">{skill.title}</p>
+                  <p className="mt-1 text-base text-fg/60">{skill.blurb}</p>
                 </Panel>
               </motion.div>
             );

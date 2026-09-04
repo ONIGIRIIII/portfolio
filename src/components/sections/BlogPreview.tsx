@@ -38,9 +38,9 @@ export function BlogPreview() {
                     <div className="bg-line absolute left-1/2 top-0 h-full w-px" />
                     <span className={`border-bg relative z-10 mt-6 h-2.5 w-2.5 rounded-full border-2 ${c.bg}`} />
                   </div>
-                  <Panel href={category.href} interactive className="flex-1 p-6">
-                    <p className="font-serif text-lg">{category.label}</p>
-                    <p className="mt-2 text-sm text-fg/60">{category.blurb}</p>
+                  <Panel href={category.href} interactive className="flex-1 p-7">
+                    <p className="font-serif text-xl">{category.label}</p>
+                    <p className="mt-2 text-base text-fg/60">{category.blurb}</p>
                   </Panel>
                 </motion.div>
               );

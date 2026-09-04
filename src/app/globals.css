@@ -16,10 +16,11 @@
   --accent-violet: 124 58 237;
 
   --glass-tint: 255 255 255;
-  --glass-tint-alpha: 0.55;
+  --glass-tint-alpha: 0.6;
   --glass-border: 0 0 0;
-  --glass-border-alpha: 0.08;
-  --glass-sheen-alpha: 0.35;
+  --glass-border-alpha: 0.06;
+  --glass-sheen-alpha: 0.4;
+  --glass-rim-alpha: 0.75;
 }
 
 .dark {
@@ -37,10 +38,11 @@
   --accent-violet: 167 139 250;
 
   --glass-tint: 30 30 30;
-  --glass-tint-alpha: 0.45;
+  --glass-tint-alpha: 0.5;
   --glass-border: 255 255 255;
-  --glass-border-alpha: 0.12;
-  --glass-sheen-alpha: 0.12;
+  --glass-border-alpha: 0.1;
+  --glass-sheen-alpha: 0.16;
+  --glass-rim-alpha: 0.3;
 }
 
 @theme inline {
@@ -57,10 +59,10 @@
   --color-accent-violet: rgb(var(--accent-violet));
 
   --font-sans: var(--font-inter);
-  --font-mono: var(--font-space-mono);
-  --font-serif: var(--font-fraunces);
+  --font-mono: var(--font-jetbrains);
+  --font-serif: var(--font-jetbrains);
 
-  --radius-glass: 1.75rem;
+  --radius-glass: 0.375rem;
   --radius-chip: 999px;
 }
 
@@ -75,26 +77,60 @@
 
 @layer components {
   .glass {
-    @apply relative rounded-glass border backdrop-blur-xl backdrop-saturate-150;
+    @apply relative rounded-glass border backdrop-blur-xl backdrop-saturate-200;
     background-color: rgb(var(--glass-tint) / var(--glass-tint-alpha));
     border-color: rgb(var(--glass-border) / var(--glass-border-alpha));
     box-shadow:
-      0 8px 32px -8px rgb(0 0 0 / 0.25),
-      inset 0 1px 0 rgb(255 255 255 / 0.06);
+      0 18px 44px -16px rgb(0 0 0 / 0.32),
+      inset 0 1.5px 0 rgb(255 255 255 / var(--glass-rim-alpha)),
+      inset 0 -1.5px 0 rgb(0 0 0 / 0.12),
+      inset 1.5px 0 0 rgb(255 255 255 / calc(var(--glass-rim-alpha) * 0.45)),
+      inset -1.5px 0 0 rgb(0 0 0 / 0.08);
   }
 
-  .glass-sheen {
-    @apply pointer-events-none absolute inset-0 rounded-glass;
-    background: linear-gradient(
-      135deg,
-      rgb(255 255 255 / var(--glass-sheen-alpha)),
-      transparent 45%
-    );
+  .glass::before,
+  .panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    background: radial-gradient(22% 18% at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / var(--glass-sheen-alpha)), transparent 75%);
+  }
+
+  .glass:hover::before,
+  .panel:hover::before {
+    opacity: 1;
+  }
+
+  .glass::after,
+  .panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    background: linear-gradient(175deg, transparent 55%, rgb(var(--color-accent) / 0.08) 100%);
+  }
+
+  .glass:hover::after,
+  .panel:hover::after {
+    opacity: 1;
   }
 
   .panel {
-    @apply relative border border-line backdrop-blur-md backdrop-saturate-150;
-    background-color: rgb(var(--color-surface) / 0.72);
+    @apply relative rounded-glass border border-line backdrop-blur-xl backdrop-saturate-200;
+    background-color: rgb(var(--color-surface) / 0.76);
+    box-shadow:
+      0 18px 44px -18px rgb(0 0 0 / 0.28),
+      inset 0 1.5px 0 rgb(255 255 255 / var(--glass-rim-alpha)),
+      inset 0 -1.5px 0 rgb(0 0 0 / 0.1),
+      inset 1.5px 0 0 rgb(255 255 255 / calc(var(--glass-rim-alpha) * 0.35)),
+      inset -1.5px 0 0 rgb(0 0 0 / 0.06);
   }
 
   .dot-grid {
@@ -135,6 +171,10 @@
   .marquee-track {
     animation: marquee 28s linear infinite;
   }
+
+  .neon-pulse {
+    animation: neon-pulse 2.6s ease-in-out infinite;
+  }
 }
 
 @keyframes marquee {
@@ -146,8 +186,22 @@
   }
 }
 
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 12px -2px rgb(var(--color-accent) / 0.5),
+      0 0 26px -8px rgb(var(--accent-blue) / 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 20px -2px rgb(var(--color-accent) / 0.85),
+      0 0 38px -6px rgb(var(--accent-blue) / 0.55);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track {
+  .marquee-track,
+  .neon-pulse {
     animation: none;
   }
 }
