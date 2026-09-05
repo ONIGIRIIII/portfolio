@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "Harshpreet Singh",
-  role: "Data & Business Analyst",
+  role: "AI + Data Scientist",
   email: "singhharshpreet675@gmail.com",
 } as const;
 
@@ -9,7 +9,7 @@ export const sectionLinks = {
   about: "/#about",
   skills: "/#skills",
   certifications: "/#certifications",
-  projects: "/#projects",
+  projects: "/projects",
   blog: "/blog",
 } as const;
 

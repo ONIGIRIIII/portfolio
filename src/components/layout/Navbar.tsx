@@ -1,8 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { navLinks } from "@/lib/site-config";
+import { navLinks, sectionLinks } from "@/lib/site-config";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function Navbar() {
@@ -10,6 +11,8 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const reduceMotion = useReducedMotion();
+  const pathname = usePathname();
+  const links = pathname === "/" ? navLinks : [{ label: "Home", href: sectionLinks.home }, ...navLinks];
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 24);
@@ -51,7 +54,7 @@ export function Navbar() {
         <div className="hidden md:block" />
 
         <div className="hidden items-center justify-center gap-6 md:flex">
-          {navLinks.map((link) => (
+          {links.map((link) => (
             <a
               key={link.href}
               href={link.href}
@@ -78,7 +81,7 @@ export function Navbar() {
             className="glass !rounded-none border-x-0 border-t-0 md:hidden"
           >
             <div className="flex flex-col gap-1 px-6 py-4">
-              {navLinks.map((link) => (
+              {links.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}

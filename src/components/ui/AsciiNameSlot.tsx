@@ -6,7 +6,7 @@ import { useReducedMotion } from "framer-motion";
 const RAMP = " .:-+*#%@";
 const DRIFT_SPEED = 0.05; // px per ms, ambient drift once released
 const INITIAL_HOLD_MS = 3000; // both rows sit still on the English name before drifting
-const SEP = "   |   ";
+const SEP = "   /   ";
 
 interface Cell {
   x: number;

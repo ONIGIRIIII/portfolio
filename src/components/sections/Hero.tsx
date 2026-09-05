@@ -1,18 +1,30 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { useRef } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useRef, useState } from "react";
 import { hero } from "@/content/placeholder-data";
+import { socialLinks } from "@/lib/site-config";
 import { fadeUp } from "@/lib/motion";
 import { Button } from "@/components/ui/Button";
 import { DotBadge } from "@/components/ui/DotBadge";
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { Marquee } from "@/components/ui/Marquee";
 import { AsciiNameSlot } from "@/components/ui/AsciiNameSlot";
+import { GithubIcon, LinkedinIcon, MailIcon } from "@/components/ui/SocialIcons";
+
+const contactLinks = [
+  { label: "GitHub", href: socialLinks.github, Icon: GithubIcon },
+  { label: "LinkedIn", href: socialLinks.linkedin, Icon: LinkedinIcon },
+  { label: "Email", href: socialLinks.email, Icon: MailIcon },
+];
+
+const nameFirsts = hero.nameVariants.map((variant) => variant[0]);
+const nameLasts = hero.nameVariants.map((variant) => variant[1]);
 
 export function Hero() {
   const reduceMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
+  const [contactOpen, setContactOpen] = useState(false);
 
   const container = {
     hidden: {},
@@ -37,15 +49,17 @@ export function Hero() {
           variants={container}
           className="flex flex-col items-center gap-6 text-center lg:items-start lg:text-left"
         >
-          <motion.div variants={fadeUp}>
-            <DotBadge>{hero.kicker}</DotBadge>
+          <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-3 lg:justify-start">
+            {hero.kickers.map((kicker) => (
+              <DotBadge key={kicker}>{kicker}</DotBadge>
+            ))}
           </motion.div>
 
           <motion.div variants={fadeUp} className="w-full">
             <h1 className="sr-only">{hero.name}</h1>
             <AsciiNameSlot
-              firsts={hero.nameVariants.map((variant) => variant[0])}
-              lasts={hero.nameVariants.map((variant) => variant[1])}
+              firsts={nameFirsts}
+              lasts={nameLasts}
               className="h-[180px] w-full sm:h-[220px] md:h-[280px] lg:h-[350px]"
             />
           </motion.div>
@@ -54,13 +68,41 @@ export function Hero() {
             {hero.role}
           </motion.p>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-4 pt-2 lg:justify-start">
-            <Button variant="primary" href={hero.primaryCta.href}>
-              {hero.primaryCta.label}
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4 pt-2 lg:justify-start">
+            <Button variant="primary" href={hero.resumeCta.href}>
+              {hero.resumeCta.label}
             </Button>
-            <Button variant="primary" href={hero.secondaryCta.href}>
-              {hero.secondaryCta.label}
+            <Button variant="secondary" onClick={() => setContactOpen((open) => !open)}>
+              {hero.contactCta.label}
             </Button>
+            <AnimatePresence>
+              {contactOpen && (
+                <motion.div
+                  key="contact-links"
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: "auto" }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                  className="flex items-center gap-2 overflow-hidden"
+                >
+                  {contactLinks.map(({ label, href, Icon }, i) => (
+                    <motion.a
+                      key={label}
+                      href={href}
+                      target={label === "Email" ? undefined : "_blank"}
+                      rel={label === "Email" ? undefined : "noopener noreferrer"}
+                      aria-label={label}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: reduceMotion ? 0 : i * 0.06 }}
+                      className="glass focus-visible:ring-accent focus-visible:ring-offset-bg flex h-11 w-11 shrink-0 items-center justify-center !rounded-chip focus-visible:ring-2 focus-visible:ring-offset-2 focus:outline-none"
+                    >
+                      <Icon className="h-4 w-4" />
+                    </motion.a>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </motion.div>
 

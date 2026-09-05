@@ -21,11 +21,11 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${siteConfig.name} — Portfolio`,
-  description: `${siteConfig.role} — projects, skills, and writing from ${siteConfig.name}.`,
+  title: `${siteConfig.name} · Portfolio`,
+  description: `${siteConfig.role}: projects, skills, and writing from ${siteConfig.name}.`,
   openGraph: {
-    title: `${siteConfig.name} — Portfolio`,
-    description: `${siteConfig.role} — projects, skills, and writing from ${siteConfig.name}.`,
+    title: `${siteConfig.name} · Portfolio`,
+    description: `${siteConfig.role}: projects, skills, and writing from ${siteConfig.name}.`,
     type: "website",
   },
 };

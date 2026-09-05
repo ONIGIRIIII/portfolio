@@ -3,7 +3,7 @@ import { BlogSection } from "@/components/sections/BlogSection";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: `Writing — ${siteConfig.name}`,
+  title: `Writing · ${siteConfig.name}`,
   description: `Notes, project write-ups, and certifications from ${siteConfig.name}.`,
 };
 

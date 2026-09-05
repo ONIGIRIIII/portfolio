@@ -24,10 +24,10 @@
 }
 
 .dark {
-  --color-bg: 18 18 18;
+  --color-bg: 24 24 24;
   --color-fg: 245 245 240;
-  --color-surface: 28 28 28;
-  --color-surface-alt: 36 36 36;
+  --color-surface: 34 34 34;
+  --color-surface-alt: 44 44 44;
   --color-accent: 255 90 20;
   --color-line: 255 255 255;
   --line-alpha: 0.14;
@@ -41,7 +41,7 @@
   --glass-tint-alpha: 0.5;
   --glass-border: 255 255 255;
   --glass-border-alpha: 0.1;
-  --glass-sheen-alpha: 0.16;
+  --glass-sheen-alpha: 0;
   --glass-rim-alpha: 0.3;
 }
 
