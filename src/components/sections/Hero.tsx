@@ -42,7 +42,7 @@ export function Hero() {
         NET.STATUS::SECURE
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-[1700px] py-16">
+      <div className="relative z-10 mx-auto w-full max-w-6xl py-16">
         <motion.div
           initial="hidden"
           animate="visible"
