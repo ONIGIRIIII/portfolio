@@ -23,7 +23,7 @@ export function BlogPreview() {
         />
       </RevealOnScroll>
 
-      <div className="mx-auto max-w-xl">
+      <div className="mx-auto max-w-2xl">
         <div className="mb-6 flex justify-center">
           <CrosshairTag>{blogCategories.centerLabel}</CrosshairTag>
         </div>
@@ -34,13 +34,13 @@ export function BlogPreview() {
               const c = accentClasses[category.color];
               return (
                 <motion.div key={category.label} variants={fadeUp} className="relative flex gap-5 pb-6">
-                  <div className="relative flex w-6 shrink-0 justify-center self-stretch">
+                  <div className="relative flex w-6 shrink-0 items-center justify-center self-stretch">
                     <div className="bg-line absolute left-1/2 top-0 h-full w-px" />
-                    <span className={`border-bg relative z-10 mt-6 h-2.5 w-2.5 rounded-full border-2 ${c.bg}`} />
+                    <span className={`border-bg relative z-10 h-2.5 w-2.5 rounded-full border-2 ${c.bg}`} />
                   </div>
-                  <Panel href={category.href} interactive className="flex-1 p-7">
-                    <p className="font-serif text-xl">{category.label}</p>
-                    <p className="mt-2 text-base text-fg/60">{category.blurb}</p>
+                  <Panel href={category.href} interactive className="flex min-h-[160px] flex-1 flex-col justify-center gap-2 p-7">
+                    <p className="font-serif text-2xl">{category.label}</p>
+                    <p className="text-base text-fg/60">{category.blurb}</p>
                   </Panel>
                 </motion.div>
               );

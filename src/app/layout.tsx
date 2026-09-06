@@ -5,7 +5,6 @@ import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SiteBackground } from "@/components/ui/SiteBackground";
-import { GlassCursor } from "@/components/ui/GlassCursor";
 import { siteConfig } from "@/lib/site-config";
 
 const inter = Inter({
@@ -40,7 +39,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="bg-bg flex min-h-screen flex-col">
         <ThemeProvider>
           <SiteBackground />
-          <GlassCursor />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />

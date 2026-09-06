@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { useReducedMotion } from "framer-motion";
 
 const RAMP = " .:-+*#%@";
-const DRIFT_SPEED = 0.05; // px per ms, ambient drift once released
+const DRIFT_SPEED = 0.09; // px per ms, ambient drift once released
 const INITIAL_HOLD_MS = 3000; // both rows sit still on the English name before drifting
 const SEP = "   /   ";
 
@@ -208,9 +208,9 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
       ctxBottom.textBaseline = "middle";
     }
 
-    function updateRow(row: RowState, dt: number, dir: 1 | -1, time: number) {
+    function updateRow(row: RowState, dt: number, dir: 1 | -1, time: number, paused: boolean) {
       if (row.patternWidth <= 0) return;
-      if (!reduceMotion && time >= driftStartTime) {
+      if (!reduceMotion && !paused && time >= driftStartTime) {
         row.scrollX += dir * DRIFT_SPEED * dt;
       }
       while (row.scrollX <= -row.patternWidth) row.scrollX += row.patternWidth;
@@ -271,8 +271,8 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
       const dt = Math.min(50, time - lastTime);
       lastTime = time;
 
-      updateRow(rowTop, dt, -1, time);
-      updateRow(rowBottom, dt, 1, time);
+      updateRow(rowTop, dt, -1, time, mouseTopRef.current.x > -9000);
+      updateRow(rowBottom, dt, 1, time, mouseBottomRef.current.x > -9000);
 
       const { fg, accent, accent2 } = colors();
       drawRow(ctxTop, rowTop, rowHeight, fg, accent, accent2, mouseTopRef.current);

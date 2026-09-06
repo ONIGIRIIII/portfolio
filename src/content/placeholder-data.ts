@@ -12,7 +12,7 @@ export const hero = {
   role: siteConfig.role,
   subhead:
     "I turn messy, real-world data into clear systems and decisions, from BI dashboards and ETL pipelines to full-stack tools, while studying Math at UBC.",
-  resumeCta: { label: "Resume", href: "/resume.pdf" },
+  resumeCta: { label: "Resume", href: "/resume" },
   contactCta: { label: "Get in Touch" },
   stack: ["Python", "SQL", "Power BI", "AWS", "Node.js", "PostgreSQL", "Docker", "JavaScript"],
 };
@@ -143,27 +143,47 @@ export const projects = {
     },
     {
       slug: "revault-game-preservation-db",
-      title: "ReVault: Game Preservation DB",
+      title: "ReVault: Retro Video Game Preservation Archive",
       year: "2026",
       color: "blue" as const,
       art: "revault" as const,
-      tags: ["Oracle SQL", "Node.js", "Express"],
+      tags: ["Oracle SQL", "Node.js", "Express", "OracleDB", "HTML/CSS/JS"],
       blurb:
-        "A 26-table relational database and full-stack web app for archiving retro games, from acquisition to restoration workflows.",
+        "A BCNF-normalized 26-table Oracle schema and full-stack web app for archiving retro games, from acquisition and hardware compatibility to restoration workflows.",
       href: `/projects#revault-game-preservation-db`,
       content: [
+        { type: "heading", text: "Problem" },
         {
           type: "paragraph",
-          text: "ReVault started as a simple catalog: games, platforms, condition notes. It grew to 26 tables once acquisition history, restoration workflows, and multi-region releases needed modeling without losing referential integrity.",
+          text: "Retro game preservation has a data problem unique to the medium: a game can't be separated from the machine that runs it. A 1992 SNES cartridge survives only if both the cartridge and a working console that can read it still exist, and both are actively decaying (save batteries die after ~15 years, discs rot, console capacitors leak). An archive that collects, restores, and catalogues these artifacts has to track wildly different item types (game media, console units, accessories), their provenance and storage, hardware compatibility (which console board revisions can run which regional releases), condition history over time, and a full restoration workflow, including who did the work and what parts they used, since undisclosed restoration is the main fraud vector in the hobby. Spreadsheets can't hold those relationships, and getting them wrong makes basic questions (\"which items have degraded since intake?\", \"total insured value per room?\") unanswerable.",
+        },
+        { type: "heading", text: "Approach" },
+        {
+          type: "paragraph",
+          text: "Our three-person team designed a normalized relational database and built a full-stack app on top of it. Starting from an ER model, we specialized a PhysicalItem supertype into GameMedia / ConsoleUnit / Accessory (total, disjoint ISA), modeled ConditionAssessment, Valuation, and HardwareRevision as weak entities, and used an aggregation over the revision-in-model pairing so compatibility relationships attach to the right unit. We mapped the ER diagram to a relational schema, checked every relation against its functional dependencies, and decomposed the two BCNF violations we found: region → regionBoard split ReleaseVersion into a RegionInfo table, and room → building plus room → isClimateControlled split StorageLocation into RoomBuilding and RoomClimate (both lossless and dependency-preserving). The final schema is 26 tables. On top of it we built a Node.js/Express API with the OracleDB driver serving a no-framework HTML/CSS/JS frontend, with every feature following one path: GUI → fetch → controller route → service (parameterized SQL) → Oracle → JSON back up. The interface is a single-page app with a fixed sidebar, shared render/toast/loading helpers reused across features, and a deliberately retro arcade aesthetic (pixel fonts, CRT grid background, scanline transitions) fitting the cartridge-era subject.",
+        },
+        {
+          type: "paragraph",
+          text: "The BCNF decomposition removed the transitive dependencies from StorageLocation, leaving three clean relations:",
         },
         {
           type: "code",
           language: "sql",
-          code: "CREATE TABLE acquisition (\n  id            NUMBER GENERATED ALWAYS AS IDENTITY,\n  game_id       NUMBER NOT NULL REFERENCES game(id),\n  acquired_on   DATE NOT NULL,\n  condition_id  NUMBER REFERENCES condition_lookup(id),\n  PRIMARY KEY (id)\n);",
+          code: "CREATE TABLE RoomBuilding (\n    room     VARCHAR(30) PRIMARY KEY,\n    building VARCHAR(50) NOT NULL\n);\nCREATE TABLE RoomClimate (\n    room                VARCHAR(30) PRIMARY KEY,\n    isClimateControlled NUMBER(1) NOT NULL CHECK (isClimateControlled IN (0, 1))\n);\nCREATE TABLE StorageLocation (\n    locationID INTEGER PRIMARY KEY,\n    room       VARCHAR(30) NOT NULL,\n    shelfCode  VARCHAR(20),\n    FOREIGN KEY (room) REFERENCES RoomBuilding(room),\n    FOREIGN KEY (room) REFERENCES RoomClimate(room)\n);",
         },
         {
           type: "paragraph",
-          text: "In hindsight, a few tables, particularly the ones splitting out minor lookup values, could have stayed as enums. Normalization is a tool, not a goal, and a rebuild would collapse a handful of them.",
+          text: "A hard team rule was that all user input goes through bind variables, never string concatenation, so the runtime-assembled selection and projection queries stay injection-safe. Each entity is exposed through consistent REST routes, with SQL isolated in a service layer:",
+        },
+        {
+          type: "code",
+          language: "javascript",
+          code: "// Runtime-assembled selection: conditions come from the UI, values are bound\nrouter.post('/select-items', async (req, res) => {\n    try {\n        const rows = await appService.selectPhysicalItems(req.body.clauses || []);\n        res.json({ data: rows });\n    } catch (e) {\n        res.status(500).json({ msg: e.message });\n    }\n});\n\n// Aggregation and division reports\nrouter.get('/report/jobs-by-status', async (req, res) =>\n    res.json({ data: await appService.aggJobsByStatus() }));\nrouter.get('/report/universal-titles', async (req, res) =>\n    res.json({ data: await appService.divisionGameTitles() }));",
+        },
+        { type: "heading", text: "Outcome" },
+        {
+          type: "paragraph",
+          text: "A working full-stack preservation archive backed by a BCNF-normalized 26-table Oracle schema covering the full artifact lifecycle: acquisition and provenance, item classification, hardware compatibility, condition and valuation history, and the restoration pipeline (jobs, technicians, parts, certificates). The app implements the complete set of relational operations end-to-end from the browser: insert, update, delete, dynamic selection and projection, joins, GROUP BY / HAVING aggregation, nested aggregation, and division (\"titles playable on every console revision\"). It also ships a reporting script that dumps the entire database state to a styled, print-ready HTML report. Tech stack: Oracle SQL, Node.js, Express, OracleDB, HTML/CSS/JS.",
         },
       ] as ProjectContentBlock[],
     },
@@ -389,6 +409,9 @@ export const blogPosts: {
   category: BlogPostCategory;
   content: BlogContentBlock[];
 }[] = [
+  // No real posts published yet. Placeholder content commented out below.
+  // Uncomment and replace with real posts as they're written.
+  /*
   {
     slug: "linear-algebra-but-make-it-useful",
     title: "Linear algebra, but make it useful",
@@ -591,4 +614,5 @@ export const blogPosts: {
       },
     ],
   },
+  */
 ];

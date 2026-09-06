@@ -7,12 +7,24 @@ import { springHover } from "@/lib/motion";
 interface ButtonProps {
   variant?: "primary" | "secondary";
   href?: string;
+  download?: boolean | string;
+  target?: string;
+  rel?: string;
   onClick?: () => void;
   children: ReactNode;
   className?: string;
 }
 
-export function Button({ variant = "primary", href, onClick, children, className = "" }: ButtonProps) {
+export function Button({
+  variant = "primary",
+  href,
+  download,
+  target,
+  rel,
+  onClick,
+  children,
+  className = "",
+}: ButtonProps) {
   const reduceMotion = useReducedMotion();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -53,6 +65,9 @@ export function Button({ variant = "primary", href, onClick, children, className
   return (
     <Component
       href={href}
+      download={download}
+      target={target}
+      rel={rel}
       onClick={onClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}

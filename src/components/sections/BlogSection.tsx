@@ -74,6 +74,17 @@ export function BlogSection() {
         <SectionHeading tag={blogCategories.tag} title={blogCategories.title} subtitle={blogCategories.subtitle} id="blog" />
       </RevealOnScroll>
 
+      {blogPosts.length === 0 ? (
+        <RevealOnScroll>
+          <div className="panel flex flex-col items-center gap-3 px-8 py-20 text-center">
+            <span className="font-mono text-xs uppercase tracking-widest text-fg/40">status://empty</span>
+            <p className="font-serif text-2xl">First post coming soon.</p>
+            <p className="max-w-sm text-sm text-fg/60">
+              Nothing published yet. Check back soon for write-ups on projects, coursework, and co-op lessons.
+            </p>
+          </div>
+        </RevealOnScroll>
+      ) : (
       <div className="grid grid-cols-1 gap-10 md:grid-cols-[200px_1fr]">
         <div className="flex flex-col gap-1 md:border-r md:border-line md:pr-6">
           <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-fg/40">Categories</p>
@@ -137,6 +148,7 @@ export function BlogSection() {
           </div>
         </RevealOnScroll>
       </div>
+      )}
 
       <AnimatePresence>
         {openPost && (

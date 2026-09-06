@@ -11,6 +11,7 @@ export const sectionLinks = {
   certifications: "/#certifications",
   projects: "/projects",
   blog: "/blog",
+  resume: "/resume",
 } as const;
 
 export const blogSectionLinks = {
@@ -25,10 +26,11 @@ export const navLinks = [
   { label: "Certifications", href: sectionLinks.certifications },
   { label: "Projects", href: sectionLinks.projects },
   { label: "Blog", href: sectionLinks.blog },
+  { label: "Resume", href: sectionLinks.resume },
 ] as const;
 
 export const socialLinks = {
-  github: "https://github.com/",
-  linkedin: "https://linkedin.com/",
+  github: "https://github.com/ONIGIRIIII",
+  linkedin: "https://www.linkedin.com/in/harshpreet-singh-2331762a4/",
   email: `mailto:${siteConfig.email}`,
 } as const;

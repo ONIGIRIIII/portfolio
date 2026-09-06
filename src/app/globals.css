@@ -19,7 +19,6 @@
   --glass-tint-alpha: 0.6;
   --glass-border: 0 0 0;
   --glass-border-alpha: 0.06;
-  --glass-sheen-alpha: 0.4;
   --glass-rim-alpha: 0.75;
 }
 
@@ -41,7 +40,6 @@
   --glass-tint-alpha: 0.5;
   --glass-border: 255 255 255;
   --glass-border-alpha: 0.1;
-  --glass-sheen-alpha: 0;
   --glass-rim-alpha: 0.3;
 }
 
@@ -86,23 +84,6 @@
       inset 0 -1.5px 0 rgb(0 0 0 / 0.12),
       inset 1.5px 0 0 rgb(255 255 255 / calc(var(--glass-rim-alpha) * 0.45)),
       inset -1.5px 0 0 rgb(0 0 0 / 0.08);
-  }
-
-  .glass::before,
-  .panel::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    background: radial-gradient(22% 18% at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / var(--glass-sheen-alpha)), transparent 75%);
-  }
-
-  .glass:hover::before,
-  .panel:hover::before {
-    opacity: 1;
   }
 
   .glass::after,
