@@ -32,7 +32,7 @@ export function Hero() {
   };
 
   return (
-    <section ref={sectionRef} id="top" className="relative flex min-h-screen items-center overflow-hidden px-6 pt-24 lg:pl-12 lg:pr-6">
+    <section ref={sectionRef} id="top" className="relative flex min-h-screen items-center overflow-hidden px-3 pt-24 lg:pl-6 lg:pr-3">
       <CornerFrame className="pointer-events-none absolute inset-6 sm:inset-10" />
 
       <div className="pointer-events-none absolute left-8 top-24 hidden font-mono text-[10px] uppercase tracking-widest text-accent/60 sm:left-12 sm:block">
