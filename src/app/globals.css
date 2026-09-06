@@ -69,7 +69,7 @@
     color-scheme: light dark;
     /* Scales every rem-based size (text, spacing, radii, max-widths) down
        uniformly, so the whole site reads a bit smaller/denser everywhere. */
-    font-size: 93.75%;
+    font-size: 85%;
   }
   body {
     @apply text-fg font-sans antialiased transition-colors duration-300 cursor-crosshair;
