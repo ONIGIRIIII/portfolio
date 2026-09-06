@@ -2,7 +2,7 @@ import { sectionLinks, blogSectionLinks, siteConfig } from "@/lib/site-config";
 import type { ProjectArtVariant } from "@/components/ui/ProjectArt";
 
 export const hero = {
-  kickers: ["UBC MATHEMATICS", "PREV DATA ANALYST @ APERA AI"],
+  kickers: ["UBC MATHEMATICS", "UBC OIS AWARD", "PREV DATA ANALYST @ APERA AI"],
   name: siteConfig.name,
   nameVariants: [
     ["Harshpreet", "Singh"], // English
@@ -36,6 +36,8 @@ export const skills = {
   title: "What I bring to the table.",
   subtitle: "The tools and disciplines I reach for on every build.",
   items: [
+    { title: "AI", blurb: "Generative AI, LLMs, RAG pipelines, machine learning.", color: "violet" as const, icon: "sparkle" as const },
+    { title: "Data Science", blurb: "Statistical modeling, experimentation, data analysis.", color: "teal" as const, icon: "scatter" as const },
     { title: "Data & BI Tools", blurb: "Power BI, PostgreSQL, OracleDB, Excel, HubSpot.", color: "accent" as const, icon: "chart" as const },
     { title: "Languages", blurb: "Python, SQL, R, JavaScript, C++, Java, C#.", color: "blue" as const, icon: "code" as const },
     { title: "Cloud & GenAI", blurb: "AWS fundamentals, LLM concepts, RAG pipelines.", color: "teal" as const, icon: "cloud" as const },
@@ -354,13 +356,49 @@ export const certifications = {
       status: "In Progress",
       color: "amber" as const,
     },
-    { name: "Cloud Practitioner Essentials", issuer: "AWS Skill Builder", status: "Completed", color: "amber" as const },
+    {
+      name: "Cloud Practitioner Essentials",
+      issuer: "AWS Skill Builder",
+      status: "Completed",
+      color: "amber" as const,
+      link: "https://www.linkedin.com/in/harshpreet-singh-2331762a4/details/certifications/",
+    },
     { name: "Introduction to Generative AI", issuer: "Google Cloud", status: "Completed", color: "teal" as const },
-    { name: "Google Data Analytics", issuer: "Coursera", status: "Completed", color: "blue" as const },
-    { name: "Associate Data Analyst", issuer: "DataCamp", status: "Completed", color: "violet" as const },
-    { name: "Data Analyst in Power BI", issuer: "DataCamp", status: "Completed", color: "violet" as const },
-    { name: "Associate Data Analyst in SQL", issuer: "DataCamp", status: "Completed", color: "violet" as const },
-    { name: "SQL 50 Badge", issuer: "LeetCode", status: "Completed", color: "accent" as const },
+    {
+      name: "Google Data Analytics",
+      issuer: "Coursera",
+      status: "Completed",
+      color: "blue" as const,
+      link: "https://www.coursera.org/account/accomplishments/professional-cert/certificate/AH8NZS6TP7DH",
+    },
+    {
+      name: "Associate Data Analyst",
+      issuer: "DataCamp",
+      status: "Completed",
+      color: "violet" as const,
+      link: "https://www.datacamp.com/completed/statement-of-accomplishment/track/3842832cccc9aab0ac1ba20571be82bb239c2bad",
+    },
+    {
+      name: "Data Analyst in Power BI",
+      issuer: "DataCamp",
+      status: "Completed",
+      color: "violet" as const,
+      link: "https://www.datacamp.com/completed/statement-of-accomplishment/track/a39f5b594c69a12f3b72b0576ec0e667452820fe",
+    },
+    {
+      name: "Associate Data Analyst in SQL",
+      issuer: "DataCamp",
+      status: "Completed",
+      color: "violet" as const,
+      link: "https://www.datacamp.com/completed/statement-of-accomplishment/track/7f8d097b32abcd9a3ebe95a0bfa48d5874c763dc",
+    },
+    {
+      name: "SQL 50 Badge",
+      issuer: "LeetCode",
+      status: "Completed",
+      color: "accent" as const,
+      link: "https://leetcode.com/u/Onigiriiiiii/",
+    },
   ],
 };
 

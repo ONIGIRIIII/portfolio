@@ -50,6 +50,26 @@ export function ServerIcon() {
   );
 }
 
+export function SparkleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" stroke="none">
+      <path d="M12 2c0 5.523 4.477 10 10 10-5.523 0-10 4.477-10 10 0-5.523-4.477-10-10-10 5.523 0 10-4.477 10-10Z" />
+    </svg>
+  );
+}
+
+export function ScatterIcon() {
+  return (
+    <svg {...base} className="h-5 w-5">
+      <path d="M3 20h18" />
+      <circle cx="6" cy="16" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="11" cy="9" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="16" cy="13" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="6" r="1.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export function GitBranchIcon() {
   return (
     <svg {...base} className="h-5 w-5">
@@ -68,6 +88,8 @@ export const skillIcons = {
   layers: LayersIcon,
   server: ServerIcon,
   git: GitBranchIcon,
+  sparkle: SparkleIcon,
+  scatter: ScatterIcon,
 } as const;
 
 export type SkillIconName = keyof typeof skillIcons;

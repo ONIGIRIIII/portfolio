@@ -17,11 +17,16 @@ export function SkillsGrid() {
       </RevealOnScroll>
 
       <RevealOnScroll variants={staggerContainer()}>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {skills.items.map((skill) => {
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
+          {skills.items.map((skill, i) => {
             const Icon = skillIcons[skill.icon];
+            const total = skills.items.length;
+            const remainder = total % 3;
+            let colStart = "";
+            if (remainder === 2 && i === total - 2) colStart = "lg:col-start-2";
+            if (remainder === 1 && i === total - 1) colStart = "lg:col-start-3";
             return (
-              <motion.div key={skill.title} variants={fadeUp}>
+              <motion.div key={skill.title} variants={fadeUp} className={`lg:col-span-2 ${colStart}`}>
                 <Panel interactive className="h-full p-7">
                   <DotMatrixBadge color={skill.color} icon={<Icon />} />
                   <p className="mt-4 font-serif text-xl">{skill.title}</p>

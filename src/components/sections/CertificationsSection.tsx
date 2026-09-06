@@ -11,24 +11,31 @@ type Cert = {
   issuer: string;
   color: AccentColor;
   status?: string;
+  link?: string;
 };
 
 function CertChip({ item }: { item: Cert }) {
   const c = accentClasses[item.color];
+  const Wrapper = item.link ? "a" : "div";
+  const linkProps = item.link ? { href: item.link, target: "_blank", rel: "noopener noreferrer" } : {};
 
   return (
-    <div className="panel relative flex h-[13.125rem] w-[22.3125rem] flex-col gap-2 overflow-hidden px-7 py-6">
+    <Wrapper
+      {...linkProps}
+      className={`panel relative flex h-[13.125rem] w-[22.3125rem] flex-col gap-2 overflow-hidden px-7 py-6 ${item.link ? "cursor-pointer transition-colors hover:border-accent" : ""}`}
+    >
       <span className={`absolute inset-y-0 left-0 w-1 ${c.bg}`} />
       <span className="font-mono text-xs uppercase tracking-widest text-fg/40">{item.issuer}</span>
       <span className="line-clamp-3 font-serif text-xl leading-snug">{item.name}</span>
-      <span className="mt-auto">
+      <span className="mt-auto flex items-center justify-between gap-2">
         {item.status && (
           <span className={`inline-block w-fit border px-2.5 py-1 font-mono text-[11px] ${c.border} ${c.text}`}>
             {item.status}
           </span>
         )}
+        {item.link && <span className={`font-mono text-[11px] ${c.text}`}>View ↗</span>}
       </span>
-    </div>
+    </Wrapper>
   );
 }
 
