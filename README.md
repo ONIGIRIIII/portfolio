@@ -1,4 +1,4 @@
-# Harshpreet Singh — Portfolio
+# Harshpreet Singh Portfolio
 
 Personal portfolio site for Harshpreet Singh (Data & Business Analyst, UBC Math student, Apera AI co-op). Built with Next.js App Router, styled around a monospace editorial look with a red/orange accent system, an interactive ASCII-art canvas background, and an animated ASCII rendering of the site owner's name in the hero.
 
