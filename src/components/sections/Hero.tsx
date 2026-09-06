@@ -60,7 +60,7 @@ export function Hero() {
             <AsciiNameSlot
               firsts={nameFirsts}
               lasts={nameLasts}
-              className="h-[180px] w-full sm:h-[220px] md:h-[280px] lg:h-[350px]"
+              className="h-[clamp(170px,min(22vw,26vh),350px)] w-full"
             />
           </motion.div>
 

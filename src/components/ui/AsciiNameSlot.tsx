@@ -65,16 +65,25 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
     let raf = 0;
     let lastTime = 0;
     let driftStartTime = 0;
+    let visible = true;
     const rowTop = freshRow();
     const rowBottom = freshRow();
 
-    function colors() {
+    function readColors() {
       const styles = getComputedStyle(document.documentElement);
       const fg = styles.getPropertyValue("--color-fg").trim() || "10 10 10";
       const accent = styles.getPropertyValue("--color-accent").trim() || "196 0 16";
       const accent2 = styles.getPropertyValue("--accent-blue").trim() || "37 99 235";
       return { fg, accent, accent2 };
     }
+
+    // Reading computed styles forces a synchronous style recalc — expensive to
+    // do every frame. Cache it and only refresh when the theme class changes.
+    let cachedColors = readColors();
+    const themeObserver = new MutationObserver(() => {
+      cachedColors = readColors();
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
     function buildRow(words: string[], row: RowState, canvasH: number) {
       const vPad = canvasH * 0.04;
@@ -274,7 +283,7 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
       updateRow(rowTop, dt, -1, time, mouseTopRef.current.x > -9000);
       updateRow(rowBottom, dt, 1, time, mouseBottomRef.current.x > -9000);
 
-      const { fg, accent, accent2 } = colors();
+      const { fg, accent, accent2 } = cachedColors;
       drawRow(ctxTop, rowTop, rowHeight, fg, accent, accent2, mouseTopRef.current);
       drawRow(ctxBottom, rowBottom, rowHeight, fg, accent, accent2, mouseBottomRef.current);
 
@@ -286,6 +295,23 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
     build();
     driftStartTime = performance.now() + INITIAL_HOLD_MS;
     raf = requestAnimationFrame(draw);
+
+    // Scrolled out of view (e.g. past the hero) the canvases are invisible but
+    // were still redrawing every frame — pause the loop and resume on return.
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible && !raf) {
+          lastTime = 0;
+          raf = requestAnimationFrame(draw);
+        } else if (!visible && raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      },
+      { threshold: 0 },
+    );
+    visibilityObserver.observe(container);
 
     function onMoveTop(e: MouseEvent) {
       const rect = canvasTop!.getBoundingClientRect();
@@ -309,6 +335,8 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      themeObserver.disconnect();
+      visibilityObserver.disconnect();
       canvasTop.removeEventListener("mousemove", onMoveTop);
       canvasTop.removeEventListener("mouseleave", onLeaveTop);
       canvasBottom.removeEventListener("mousemove", onMoveBottom);

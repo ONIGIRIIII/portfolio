@@ -61,17 +61,25 @@ export function AsciiField({ className = "", cell = 15, intensity = 1 }: AsciiFi
       ctx.textBaseline = "middle";
     }
 
-    function colors() {
+    function readColors() {
       const styles = getComputedStyle(document.documentElement);
       const fg = styles.getPropertyValue("--color-fg").trim() || "10 10 10";
       const accent = styles.getPropertyValue("--color-accent").trim() || "196 0 16";
       return { fg, accent };
     }
 
+    // Reading computed styles forces a synchronous style recalc — expensive to
+    // do every frame. Cache it and only refresh when the theme class changes.
+    let cachedColors = readColors();
+    const themeObserver = new MutationObserver(() => {
+      cachedColors = readColors();
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
     function draw(time: number) {
       if (!ctx) return;
       ctx.clearRect(0, 0, width, height);
-      const { fg, accent } = colors();
+      const { fg, accent } = cachedColors;
       const mouse = mouseRef.current;
       const hoverRadius = CELL * 6;
 
@@ -189,6 +197,7 @@ export function AsciiField({ className = "", cell = 15, intensity = 1 }: AsciiFi
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      themeObserver.disconnect();
       window.removeEventListener("mousemove", onMouseMove);
       document.documentElement.removeEventListener("mouseout", onMouseOut);
       window.removeEventListener("click", onClick);
