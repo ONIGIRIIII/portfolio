@@ -17,7 +17,7 @@ function CertChip({ item }: { item: Cert }) {
   const c = accentClasses[item.color];
 
   return (
-    <div className="panel relative flex h-[210px] w-[357px] flex-col gap-2 overflow-hidden px-7 py-6">
+    <div className="panel relative flex h-[13.125rem] w-[22.3125rem] flex-col gap-2 overflow-hidden px-7 py-6">
       <span className={`absolute inset-y-0 left-0 w-1 ${c.bg}`} />
       <span className="font-mono text-xs uppercase tracking-widest text-fg/40">{item.issuer}</span>
       <span className="line-clamp-3 font-serif text-xl leading-snug">{item.name}</span>
