@@ -76,8 +76,19 @@ export function AsciiField({ className = "", cell = 15, intensity = 1 }: AsciiFi
     });
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
+    // This redraws every cell in the viewport with trig + distance math and a
+    // fillText call — real cost at 60fps. It's a slow ambient effect, so
+    // capping it well below 60fps cuts CPU use a lot with no visible change.
+    const FRAME_INTERVAL = 1000 / 24;
+    let lastDrawTime = 0;
+
     function draw(time: number) {
       if (!ctx) return;
+      if (time - lastDrawTime < FRAME_INTERVAL) {
+        if (!reduceMotion) raf = requestAnimationFrame(draw);
+        return;
+      }
+      lastDrawTime = time;
       ctx.clearRect(0, 0, width, height);
       const { fg, accent } = cachedColors;
       const mouse = mouseRef.current;
