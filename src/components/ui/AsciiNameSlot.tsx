@@ -265,6 +265,10 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
       ctx.clearRect(0, 0, width, h);
       if (row.patternWidth <= 0) return;
       ctx.font = `${Math.max(10, row.cellH * 0.72)}px ${fontFamily}`;
+      // Scales with cell size, not a fixed pixel radius, so the hover glow
+      // and enlarge effect stay proportionate to the text at any screen size
+      // instead of looking oversized once the name renders smaller.
+      const hoverRadius = row.cellH * 9;
       const repeats = Math.ceil(width / row.patternWidth) + 2;
       for (let r = -1; r < repeats; r++) {
         const baseX = row.scrollX + r * row.patternWidth;
@@ -276,7 +280,7 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
           const dx = cx - mouse.x;
           const dy = c.y - mouse.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const proximity = Math.max(0, 1 - dist / 130);
+          const proximity = Math.max(0, 1 - dist / hoverRadius);
 
           const intensity = Math.min(1, c.coverage + proximity * 0.55);
           const charIndex = Math.min(RAMP.length - 1, Math.floor(intensity * RAMP.length));
