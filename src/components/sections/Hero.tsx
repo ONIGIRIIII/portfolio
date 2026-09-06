@@ -60,19 +60,19 @@ export function Hero() {
             <AsciiNameSlot
               firsts={nameFirsts}
               lasts={nameLasts}
-              className="h-[clamp(200px,min(26vw,30vh),400px)] w-full"
+              className="h-[clamp(170px,min(22vw,26vh),350px)] w-full"
             />
           </motion.div>
 
-          <motion.p variants={fadeUp} className="font-serif text-lg italic text-accent sm:text-xl">
+          <motion.p variants={fadeUp} className="font-serif text-xl italic text-accent sm:text-2xl">
             {hero.role}
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4 pt-2 lg:justify-start">
-            <Button variant="primary" href={hero.resumeCta.href} className="!px-4 !py-2 !text-xs">
+            <Button variant="primary" href={hero.resumeCta.href}>
               {hero.resumeCta.label}
             </Button>
-            <Button variant="secondary" onClick={() => setContactOpen((open) => !open)} className="!px-4 !py-2 !text-xs">
+            <Button variant="secondary" onClick={() => setContactOpen((open) => !open)}>
               {hero.contactCta.label}
             </Button>
             <AnimatePresence>
