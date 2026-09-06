@@ -66,6 +66,7 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
     let lastTime = 0;
     let driftStartTime = 0;
     let visible = true;
+    let fontFamily = "monospace";
     const rowTop = freshRow();
     const rowBottom = freshRow();
 
@@ -136,6 +137,13 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
       }
       row.spans = spans;
 
+      // The separator's own "/" glyph samples inconsistently: it lands at a
+      // different sub-cell offset after every word (word widths vary a lot
+      // across languages), so the same character comes out a different
+      // thickness/shape each time. Carve out its span here and replace it
+      // below with a fixed, grid-snapped shape that's identical everywhere.
+      const gaps = spans.map((s) => ({ start: s.start + s.width, end: s.start + s.width + sepWidth }));
+
       const maskW = Math.max(1, Math.ceil(row.patternWidth) + row.cellW * 4);
       const maskH = canvasH;
       const mask = document.createElement("canvas");
@@ -160,6 +168,7 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
         for (let gx = 0; gx < cols; gx++) {
           const cellX0 = gx * row.cellW;
           const cellY0 = gy * row.cellH;
+          if (gaps.some((g) => cellX0 + row.cellW / 2 >= g.start && cellX0 + row.cellW / 2 <= g.end)) continue;
           let alpha = 0;
           for (let sy = 0; sy < steps; sy++) {
             for (let sx = 0; sx < steps; sx++) {
@@ -173,6 +182,24 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
             const px = Math.min(maskW - 1, Math.round(cellX0 + row.cellW / 2));
             const py = Math.min(maskH - 1, Math.round(cellY0 + row.cellH / 2));
             next.push({ x: px, y: py, coverage: alpha });
+          }
+        }
+      }
+
+      // Fixed diagonal shape, grid-snapped, identical at every separator.
+      // Two columns per row (not one) so it reads as a solid stroke rather
+      // than a thin dotted line.
+      const slashRows = 9;
+      for (const g of gaps) {
+        const centerX = (g.start + g.end) / 2;
+        const baseCol = Math.round(centerX / row.cellW);
+        const baseRow = Math.round(maskH / 2 / row.cellH);
+        for (let i = 0; i < slashRows; i++) {
+          const t = i / (slashRows - 1); // 0 = bottom, 1 = top
+          const gy = baseRow + Math.round((slashRows - 1) / 2 - i);
+          const gx = baseCol + Math.round((t - 0.5) * (slashRows - 1));
+          for (const dgx of [gx - 1, gx, gx + 1, gx + 2]) {
+            next.push({ x: dgx * row.cellW + row.cellW / 2, y: gy * row.cellH + row.cellH / 2, coverage: 1 });
           }
         }
       }
@@ -208,11 +235,11 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
       buildRow(firsts, rowTop, rowHeight);
       buildRow(lasts, rowBottom, rowHeight);
 
-      const family = getComputedStyle(container).fontFamily || "monospace";
-      ctxTop.font = `${Math.max(10, rowTop.cellH * 0.72)}px ${family}`;
+      fontFamily = getComputedStyle(container).fontFamily || "monospace";
+      ctxTop.font = `${Math.max(10, rowTop.cellH * 0.72)}px ${fontFamily}`;
       ctxTop.textAlign = "center";
       ctxTop.textBaseline = "middle";
-      ctxBottom.font = `${Math.max(10, rowBottom.cellH * 0.72)}px ${family}`;
+      ctxBottom.font = `${Math.max(10, rowBottom.cellH * 0.72)}px ${fontFamily}`;
       ctxBottom.textAlign = "center";
       ctxBottom.textBaseline = "middle";
     }
@@ -237,6 +264,7 @@ export function AsciiNameSlot({ firsts, lasts, className = "" }: AsciiNameSlotPr
     ) {
       ctx.clearRect(0, 0, width, h);
       if (row.patternWidth <= 0) return;
+      ctx.font = `${Math.max(10, row.cellH * 0.72)}px ${fontFamily}`;
       const repeats = Math.ceil(width / row.patternWidth) + 2;
       for (let r = -1; r < repeats; r++) {
         const baseX = row.scrollX + r * row.patternWidth;
