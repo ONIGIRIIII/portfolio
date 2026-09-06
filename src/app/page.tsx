@@ -5,11 +5,13 @@ import { CertificationsSection } from "@/components/sections/CertificationsSecti
 import { ProjectsPreview } from "@/components/sections/ProjectsPreview";
 import { BlogPreview } from "@/components/sections/BlogPreview";
 import { SectionDots } from "@/components/ui/SectionDots";
+import { BackgroundHint } from "@/components/ui/BackgroundHint";
 
 export default function Home() {
   return (
     <>
       <SectionDots />
+      <BackgroundHint />
       <Hero />
       <AboutPreview />
       <SkillsGrid />

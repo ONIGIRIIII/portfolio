@@ -111,11 +111,11 @@ export function Hero() {
           initial="hidden"
           animate="visible"
           transition={{ delay: 0.6 }}
-          className="mt-16 w-full border-t border-line pt-6"
+          className="mt-10 w-full border-t border-line pt-4"
         >
           <Marquee
             items={[...hero.stack, ...hero.stack, ...hero.stack].map((tech, i) => (
-              <span key={`${tech}-${i}`} className="font-mono text-sm tracking-wide text-fg/40">
+              <span key={`${tech}-${i}`} className="font-mono text-xs tracking-wide text-fg/40">
                 {tech} <span className="text-fg/20">/</span>
               </span>
             ))}
